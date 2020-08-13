@@ -1,12 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define MOD 1000000007
+#define maxN 1000001
 typedef long long ll;
+
+//----------------------------------------------
+// Checking whether i'th bit is set or not!
+//----------------------------------------------
+void checkSetBit(int n, int i) {
+	cout << (n & (1 << i) ? "Yes" : "No");
+}
+
+//----------------------------------------------
+// Counting set bits in a number
+//----------------------------------------------
+int countSetBits(int n) {
+	int ans = 0;
+	while (n) {
+		if (n & 1)
+			ans++;
+		n = n >> 1;
+	}
+	return ans;
+}
+// A bit faster approach would be this!!
+// This method would run equal to the number
+// of set bits in 'n' times, rather than logN
+int countSetBits(int n) {
+	int ans = 0;
+	while (n) {
+		ans++;
+		n = n & (n - 1);
+	}
+	return ans;
+}
+
 //----------------------------------------------
 //Fast Exponentiation [(base^exp) % mod]
 //----------------------------------------------
 ll fast_exp(ll base, ll exp) {
-	ll result = 1;
+	ll res = 1;
 	while (exp) {
 		if (exp % 2) res = (res * base) % MOD;
 		base = (base * base) % MOD;
@@ -15,10 +48,9 @@ ll fast_exp(ll base, ll exp) {
 	return res;
 }
 
-
 //-----------------------------------------------
 // Modular multiplication [(a * b) % mod]
-// Constraint : [0 <= a, b <= 10^9]
+// Constraint : [0 <= a, b <= 10^18]
 //-----------------------------------------------
 // This code will have a complexity of O(log b), but
 // we can use __int128 in C++ to avoid any potential
@@ -34,7 +66,6 @@ ll mod_mul(ll a, ll b, ll mod) {
 	return x;
 }
 
-
 //-----------------------------------------------
 //Euclid's GCD Algorithm (Basic)
 //-----------------------------------------------
@@ -43,7 +74,6 @@ int gcd(int a, int b) {
 		return a;
 	return gcd(b, a % b);
 }
-
 
 //-----------------------------------------------
 //Euclid's GCD Algorithm (Extended) [ax + by = gcd(a,b)]
@@ -87,10 +117,15 @@ tuple<int, int, int> extended_gcd(int a, int b) {
 ceil(a / b) = (a + b - 1) / b;
 
 //-----------------------------------------------
+// 2-D vector declaration of size N x N
+//-----------------------------------------------
+vector<vector<int> > a(N, vector<int>(N, 0));
+
+//-----------------------------------------------
 // For printing large float values without their
 // scientific notation (e.g. 1.67543e002)
 //-----------------------------------------------
-cout << fixed << set_precision(9) << your_output;
+cout << fixed << setprecision(9) << your_output;
 
 //-----------------------------------------------
 //Sieve of Eratosthenes  [O(n * log (log n))]
@@ -128,7 +163,40 @@ void fast_sieve(int n) {
 }
 
 //-----------------------------------------------
-//Lower bound implementation using Binary Search
+// Prime Factorization [O(sqrt(N))]
+//-----------------------------------------------
+void primeFactorization(int n) {
+	for (int i = 2; i * i <= n; i++) {
+		int cnt = 0;
+		while (n % i == 0) {
+			cnt++;
+			n /= i;
+		}
+		cout << i << " ^ " << cnt << "\n";
+	}
+	if (n > 1)
+		cout << n << " ^ " << 1 << "\n";
+}
+
+//-----------------------------------------------
+// Prime Factorization using Sieves in case of
+// queries O(log(N))  // Pre-computation
+//-----------------------------------------------
+int leastPrime[1000001];
+void leastPrimeUsingSieve() {
+	for (int i = 1; i <= 1000000; i++)
+		leastPrime[i] = -1;
+	for (int i = 2; i * i <= 1000000; i++) {
+		if (leastPrime[i] == -1) {
+			for (int j = i * i; j <= 1000000; j += i)
+				if (leastPrime[i] == -1)
+					leastPrime[j] = i;
+		}
+	}
+}
+
+//-----------------------------------------------
+// Lower bound implementation using Binary Search
 // Find smallest value >=X
 //-----------------------------------------------
 int lowerBound(vector<int> arr, int x) {
@@ -281,8 +349,207 @@ int maxSubarraySum(vector<int> &a) {
 	return globalMax;
 }
 
+//-------------------------------------------
+// Depth-First Search (DFS)
+//-------------------------------------------
+bool visited[maxN];
+void dfs(int v) {
+	visited[v] = true;
+	/* Do Some task */
+	for (int i = 0; i < ar[v].size(); i++) {
+		int child = ar[v][i];
+		if (!visited[child])
+			dfs(child);
+	}
+}
 
+//---------------------------------------------
+// Bipartite Graph Test
+//---------------------------------------------
+// Let the two colors be 0 -> black, 1-> white
+bool visited[maxN], color[maxN];
+bool dfs(int v, bool c) {
+	visited[v] = true;
+	color[v] = c;
+	for (int child : ar[v]) {
+		if (!visited[child]) {
+			if (dfs(child, !c) == false)
+				return false;
+		}
+		else {
+			if (color[v] == color[child])
+				return false;
+		}
+	}
+	return true;
+}
 
+//----------------------------------------------
+// Checking for cycle in graphs using dfs
+//----------------------------------------------
+bool visited[maxN];
+bool dfs(int v, int parent) {
+	visited[v] = true;
+	for (int child : ar[v]) {
+		if (!visited[child]) {
+			if (dfs(child, v))
+				return true;
+		}
+		else {
+			if (child != parent)
+				return true;
+		}
+	}
+	return false;
+}
 
+//----------------------------------------------
+// In / Out Time for vertices of a graph
+//----------------------------------------------
+int inTime[maxN], outTime[maxN], timer = 1;
+bool visited[maxN];
 
+void dfs(int node) {
+	visited[node] = true;
+	inTime[node] = timer++;
+	for (int child : ar[node]) {
+		if (!visited[child])
+			dfs(child);
+	}
+	outTime[node] = timer++;
+}
 
+//---------------------------------------------
+// Subtree size Using DFS
+//---------------------------------------------
+bool vis[maxN];
+int subSize[maxN];
+
+int dfs(int node) {
+	vis[node] = true;
+	int curr_size = 1;
+	for (int child : ar[node]) {
+		if (!vis[child])
+			curr_size += dfs(child);
+	}
+	subSize[node] = curr_size;
+	return curr_size;
+}
+
+// Might be incorrect...Check Once!!
+void dfs(int node) {
+	vis[node] = true;
+	int curr_size = 1;
+	for (int child : ar[node]) {
+		if (!vis[child]) {
+			dfs(child);
+			subSize[node] += subSize[child];
+		}
+	}
+	subSize[node] += curr_size;
+}
+
+//----------------------------------------------
+// Single Source Shortest Path
+//----------------------------------------------
+bool vis[maxN];
+int dis[maxN];
+
+// Using DFS (Only for TREES)
+void dfs(int node, int d) {
+	vis[node] = true;
+	dis[node] = d;
+	for (int child : ar[node]) {
+		if (!vis[child])
+			dfs(child, d + 1);
+	}
+}
+
+// Using BFS
+void bfs(int src) {
+	queue<int> q;
+	q.push(src);
+	vis[src] = true;
+	dis[src] = 0;
+
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+
+		for (int child : a[curr]) {
+			if (!vis[child]) {
+				q.push(child);
+				dis[child] = dis[curr] + 1;
+				vis[child] = true;
+			}
+		}
+	}
+}
+
+//------------------------------------------------
+// Finding bridge edges in a graph using DFS
+//------------------------------------------------
+bool vis[maxN];
+vector<int> ar[maxN], inTime(maxN), low(maxN);
+int timer = 0;
+
+void dfs(int node, int par = -1) {
+	vis[node] = true;
+	inTime[node] = low[node] = timer++;
+
+	for (int child : ar[node]) {
+		if (child == par)
+			continue;
+
+		if (vis[child]) {
+			// This node is a back-edge
+			low[node] = min(low[node], inTime[child]);
+		}
+		else {
+			// This edge is a forward edge
+			dfs(child, node);
+
+			if (low[child] > inTime[node])
+				cout << node << "->" << child << " is a bridge.";
+
+			low[node] = min(low[node], low[child]);
+		}
+	}
+}
+
+//------------------------------------------------
+// Finding Articulation Points (Cut-vertices)
+//------------------------------------------------
+bool vis[maxN];
+vector<int> ar[maxN], inTime(maxN), low(maxN), cut_verts;
+int timer = 0;
+
+void dfs(int node, int par = -1) {
+	vis[node] = true;
+	inTime[node] = low[node] = timer++;
+
+	int children = 0;
+	for (int child : ar[node]) {
+		if (child == par)
+			continue;
+
+		if (vis[child]) {
+			// This node is a back-edge
+			low[node] = min(low[node], inTime[child]);
+		}
+		else {
+			// This edge is a forward edge
+			dfs(child, node);
+
+			// Considering vertex 1 is the root
+			if (low[child] >= inTime[node] && par != -1) {
+				// This edge is a bridge
+				cut_verts.pb(node);
+			}
+			children++;
+			low[node] = min(low[node], low[child]);
+		}
+	}
+	if (par == -1 && children > 1)
+		cut_verts.pb(node);
+}

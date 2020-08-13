@@ -153,45 +153,74 @@
 //     }
 //     return 0;
 // }
-#include <ctime>
-#include <chrono>
-#include <iostream>
-#include <unordered_map>
+// #include <ctime>
+// #include <chrono>
+// #include <iostream>
+// #include <unordered_map>
+// using namespace std;
+// using namespace std::chrono;
+
+// const int N = 2e5;
+
+// struct custom_hash {
+//     size_t operator()(uint64_t x) const {
+//         static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+//         return x + FIXED_RANDOM;
+//     }
+// };
+
+// void insert_numbers(long long x) {
+//     clock_t begin = clock();
+//     unordered_map<long long, int, custom_hash> numbers;
+
+//     for (int i = 1; i <= N; i++)
+//         numbers[i * x] = i;
+
+//     long long sum = 0;
+
+//     for (auto &entry : numbers)
+//         sum += (entry.first / x) * entry.second;
+
+//     printf("x = %lld: %.3lf seconds, sum = %lld\n", x, (double) (clock() - begin) / CLOCKS_PER_SEC, sum);
+// }
+
+// int main() {
+//     insert_numbers(107897);
+//     insert_numbers(126271);
+// }
+#include <bits/stdc++.h>
 using namespace std;
-using namespace std::chrono;
 
-const int N = 2e5;
+// int main() {
+//     double pi = 22.0 / 7.0;
+//     int n;
+//     cin >> n;
+//     printf("%.*lf\n", n, pi);
+// }
+// #define ALL(x) x.begin(), x.end()
+// #define UNIQUE(c) (c).resize(unique(ALL(c)) - (c).begin())
 
-struct custom_hash {
-    size_t operator()(uint64_t x) const {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return x + FIXED_RANDOM;
-    }
-};
+// int main() {
+//     vector<int> v{1, 2, 2, 2, 3, 3, 2, 2, 1};
+//     sort(ALL(v));
+//     unique(ALL(v));
+//     for (int i = 0; i < (int)v.size(); i++) printf("%d\n", v[i]);
+// }
 
-void insert_numbers(long long x) {
-    clock_t begin = clock();
-    unordered_map<long long, int, custom_hash> numbers;
-
-    for (int i = 1; i <= N; i++)
-        numbers[i * x] = i;
-
-    long long sum = 0;
-
-    for (auto &entry : numbers)
-        sum += (entry.first / x) * entry.second;
-
-    printf("x = %lld: %.3lf seconds, sum = %lld\n", x, (double) (clock() - begin) / CLOCKS_PER_SEC, sum);
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
 }
 
 int main() {
-    insert_numbers(107897);
-    insert_numbers(126271);
+    int n, i, m;
+    cin >> i;
+    while (i--) {
+        cin >> n >> m;
+        cout << gcd(n, m) << "\n";
+    }
 }
-
-
-
-
 
 
 
