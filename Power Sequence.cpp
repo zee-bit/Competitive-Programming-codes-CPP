@@ -45,16 +45,22 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
+	ll ans = 1e18, n;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	vll a(n);
+	rep(i, 0, n) {cin >> a[i];}
+	sort(all(a));
+	rep(i, 1, 300001) {
+		ll step = 1, val = 0;
+		rep(j, 0, n) {
+			val += abs(step - a[j]);
+			if(val > ans)	break;
+			step *= i;
+		}
+		if(val < ans)
+			ans = val;
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	cout << ans << "\n";
 }
 
 int main() {
@@ -64,7 +70,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

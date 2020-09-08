@@ -43,18 +43,73 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+const int l = ceil(log2(1001));
+int LCA[1001][l + 1], n;
+vi ar[1001], level(1001);
+
+void dfs(int node, int par, int lvl = 0) {
+	LCA[node][0] = par;
+	level[node] = lvl;
+	for(int child : ar[node]) {
+		if(child != par)
+			dfs(child, node, lvl + 1);
+	}
+}
+
+void preCompute() {
+	dfs(1, -1);
+	rep(j, 1, l + 1) {
+		rep(i, 1, n + 1) {
+			if(LCA[i][j - 1] != -1) {
+				int par = LCA[i][j - 1];
+				LCA[i][j] = LCA[par][j - 1];
+			}
+		}
+	}
+}
+
+int lca(int a, int b) {
+	if(level[b] < level[a])	swap(a, b);
+	int d = level[b] - level[a];
+	while(d > 0) {
+		int i = log2(d);
+		b = LCA[b][i];
+		d -= (1 << i);
+	}
+	if(a == b)
+		return a;
+
+	for(int i = l; i >= 0; i--) {
+		if(LCA[a][i] != -1 && (LCA[a][i] != LCA[b][i]))
+			a = LCA[a][i], b = LCA[b][i];
+	}
+	return LCA[a][0];
+}
 
 void solve() {
-	int n, mx = 0;
+	int q;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	rep(i, 0, 1001) {
+		rep(j, 0, l) {
+			LCA[i][j] = -1;
+		}
+		ar[i].clear();
+		level[i] = 0;
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	int a, b, x;
+	rep(i, 1, n + 1) {
+		cin >> x;
+		rep(j, 0, x) {
+			cin >> a;
+			ar[i].pb(a);
+		}
+	}
+	preCompute();
+	cin >> q;
+	rep(i, 0, q) {
+		cin >> a >> b;
+		cout << lca(a, b) << "\n";
+	}
 }
 
 int main() {
@@ -65,7 +120,9 @@ int main() {
 	#endif
 	int t = 1;
 	cin >> t;
-	while(t--)
+	rep(i, 1, t + 1) {
+		cout << "Case " << i << ":\n";
 		solve();
+	}
 	return 0;
 }

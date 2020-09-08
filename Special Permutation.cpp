@@ -45,16 +45,20 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
+	int n;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	if(n < 4) {cout << -1;}
+	else {
+		for(int i = n; i > 0; i--) {
+			if(i & 1)	cout << i << " ";
+		}
+		cout << "4 2 ";
+		rep(i, 6, n + 1) {
+			if(!(i & 1))
+				cout << i << " ";
+		}
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	cout << "\n";
 }
 
 int main() {

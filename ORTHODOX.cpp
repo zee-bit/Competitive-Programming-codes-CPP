@@ -28,7 +28,7 @@ const int dy4[]={0,1,0,-1};
 #define rall(v) v.rbegin(), v.rend()
 const int dx8[]={-1,-1,-1,0,1,1,1,0,-1};
 const int dy8[]={-1,0,1,1,1,0,-1,-1,-1};
-#define ust unordered_set<ll, custom_hash>
+#define usll unordered_set<ll, custom_hash>
 #define rep(i, a, b) for(ll i = a; i < b; i++)
 #define umll unordered_map<ll, ll, custom_hash>
 #define fast ios_base::sync_with_stdio(false);cin.tie(NULL);
@@ -45,16 +45,32 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
+	ll n;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	vll a(n);
+	bool isPoss = true;
+	rep(i, 0, n) {
+		cin >> a[i];
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	if(n > 100) isPoss = false;
+	usll store;
+	if(isPoss) {
+		rep(i, 0, n) {
+			ll x = a[i];
+			rep(j, i, n) {
+				x |= a[j];
+				//cout << x << " ";
+				if(store.count(x))
+					isPoss = false;
+				else
+					store.I(x);
+			}
+		}
+	}
+	if(isPoss) 
+		cout << "YES\n";
+	else
+		cout << "NO\n";
 }
 
 int main() {

@@ -43,18 +43,62 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+int n;
+vector<ll> edgeCnt, ar[maxN];
+
+int dfs(int node, int par) {
+	int cnt = 1;
+	for(int child : ar[node]) {
+		if(child != par) {
+			cnt += dfs(child, node);
+		}
+	}
+	ll contr = 1LL * cnt * (n - cnt);
+	if(node != 1)
+		edgeCnt.pb(contr);
+	return cnt;
+}
 
 void solve() {
-	int n, mx = 0;
+	int m, u, v;
+	edgeCnt.clear();
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	rep(i, 1, n + 1) {
+		ar[i].clear();
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	rep(i, 0, n - 1) {
+		cin >> u >> v;
+		ar[u].pb(v);
+		ar[v].pb(u);
+	}
+	dfs(1, -1);
+	assert((int)edgeCnt.size() == n-1);
+	cin >> m;
+	vll primes;
+	rep(i, 0, m) {
+		ll x;
+		cin >> x;
+		primes.pb(x);
+	}
+	while((int)primes.size() < n - 1) 
+		primes.pb(1LL);
+	sort(all(primes));
+	ll excess, val = 1;
+	while(int(primes.size()) >= n - 1) {
+		excess = primes.back();
+		val = (val * excess) % mod;
+		primes.popb();
+	}
+	if(m >= n - 1) {
+		primes.pb(val);
+	}
+	sort(all(edgeCnt));
+	ll ans = 0;
+	for(int i = n - 2; i >= 0; i--) {
+		ll x = (edgeCnt[i] * primes[i]) % mod;
+		ans = (ans + x) % mod;
+	}
+	cout << ans << "\n";
 }
 
 int main() {

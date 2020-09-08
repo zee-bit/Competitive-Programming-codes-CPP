@@ -43,18 +43,55 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+const int mx8[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+const int my8[] = {1, 2, 2, 1, -1, -2, -2, -1};
+bool vis[8][8];
+int dis[8][8];
+
+bool isPoss(int x, int y) {
+	if(x >= 8 || y >= 8 || x < 0 || y < 0)	
+		return false;
+	if(vis[x][y])	
+		return false;
+	return true;
+}
+
+int bfs(int srcx, int srcy, int desx, int desy) {
+	vis[srcx][srcy] = true;
+	dis[srcx][srcy] = 0;
+	if(srcx == desx && srcy == desy)
+		return 0;
+	queue<pair<int, int> > q;
+	q.push({srcx, srcy});
+	while(!q.empty()) {
+		pair<int,int> c = q.front();
+		q.pop();
+		int cx = c.ff, cy = c.ss;
+		rep(i, 0, 8) {
+			int newX = cx + mx8[i], newY = cy + my8[i];
+			if(isPoss(newX, newY)) {
+				if(newX == desx && newY == desy)
+					return dis[cx][cy] + 1;
+				dis[newX][newY] = dis[cx][cy] + 1;
+				q.push({newX, newY});
+				vis[newX][newY] = true;
+			}
+		}
+	}
+}
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	string a, b;
+	cin >> a >> b;
+	int sx = a[0] - 'a', sy = a[1] - '1';
+	int dx = b[0] - 'a', dy = b[1] - '1';
+	//cout << sx << sy << dx << dy;
+	rep(i, 0, 8) {
+		rep(j, 0, 8) {
+			vis[i][j] = false;
+		}
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	cout << bfs(sx, sy, dx, dy) << "\n";
 }
 
 int main() {

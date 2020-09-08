@@ -43,18 +43,36 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vector<pair<int, int> > ar[maxN];
 
-void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+void dijkstra() {
+	int n, m, a, b, w;
+	rep(i, 0, n) ar[i].clear();
+	cin >> n >> m;
+	rep(i, 0, m) {
+		cin >> a >> b >> w;
+		ar[a].pb({b, w});
+		ar[b].pb({a, w});
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	priority_queue<pair<int, int>, vector<pair<int, int> >, greater<pair<int, int> > > pq;
+	vector<int> dis(n + 1, inf);
+	pq.push({0, 1});
+	dis[1] = 0;
+
+	while(!pq.empty()) {
+		int currNode = pq.top().ss;
+		int currDis = pq.top().ff;
+		pq.pop();
+		for(auto child : ar[currNode]) {
+			if(currDis + child.ss < dis[child.ff]) {
+				dis[child.ff] = currDis + child.ss;
+				pq.push({dis[child.ff], child.ff});
+			}
+		}
+	}
+	rep(i, 1, n + 1) {
+		cout << dis[i] << " ";
+	}
 }
 
 int main() {
@@ -66,6 +84,6 @@ int main() {
 	int t = 1;
 	cin >> t;
 	while(t--)
-		solve();
+		dijkstra();
 	return 0;
 }

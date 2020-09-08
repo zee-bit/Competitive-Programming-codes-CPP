@@ -43,32 +43,67 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+int n, m;
+char ar[1005][1005];
+bool vis[1005][1005];
+int dis[1005][1005];
+map<pair<int, int>, pair<int, int> > path;
 
-void solve() {
-	int n,m;
-	cin >> n >> m;
-	vi a(n), b(m);
-	rep(i, 0, n) {cin >> a[i];}
-	rep(i, 0, m) {cin >> b[i];}
-	bool flag;
-	rep(A, 0, 1 << 9) {
-		rep(i, 0, n) {
-			flag = false;
-			rep(j, 0, m) {
-				if(((a[i] & b[j]) | A) == A) {
-					flag = true;
-					break;
-				}
+bool isValid(int x, int y) {
+	if(x < 1 || x > n || y < 1 || y > m)
+		return false;
+	if(vis[x][y] || ar[x][y] == '#')
+		return false;
+	return true;
+}
+
+void bfs(int srcX, int srcY, int d, int destX, int destY) {
+	queue<pair<int, int> > q;
+	q.push({srcX, srcY});
+	vis[srcX][srcY] = true;
+	dis[srcX][srcY] = d;
+	while(!q.empty()) {
+		int currX = q.front().ff;
+		int currY = q.front().ss;
+		q.pop();
+		for(int i = 0; i < 4; i++) {
+			if(isValid(currX + dx4[i], currY + dy4[i])) {
+				int newX = currX + dx4[i];
+				int newY = currY + dy4[i];
+				q.push({newX, newY});
+				path[{newX, newY}] = {currX, currY};
+				vis[newX][newY] = true;
+				dis[newX][newY] = dis[currX][currY] + 1;
 			}
-			if(flag == false)
-				break;
-		}
-		if(flag) {
-			cout << A << "\n";
-			break;
 		}
 	}
-}	
+}
+
+char printDirection(int fromX, int fromY, int toX, int toY) {
+	if(fromX == toX) {
+		if(fromY == toY + 1)
+			return 'L';
+		else if(fromY == toY - 1)
+			return 'R';
+	}
+	else if(fromY == toY) {
+		if(fromX == toX + 1)
+			return 'U';
+		else if(fromX == toX - 1)
+			return 'D';
+	}
+	return ' ';
+}
+
+void printPath(int srcX, int srcY, int destX, int destY)
+{
+    if (destX == srcX && destY == srcY) {
+        return;
+    }
+    printPath(srcX, srcY, path[{destX, destY}].ff, path[{destX, destY}].ss);
+    //cout << destX << "," << destY << "   " << path[{destX, destY}].ff << "," << path[{destX, destY}].ss << "\n"; 
+    cout << printDirection(path[{destX, destY}].ff, path[{destX, destY}].ss, destX, destY);
+}
 
 int main() {
 	fast;
@@ -78,7 +113,26 @@ int main() {
 	#endif
 	int t = 1;
 	//cin >> t;
-	while(t--)
-		solve();
+	while(t--) {
+		cin >> n >> m;
+		pair<int, int> start, end;
+		rep(i, 1, n + 1) {
+			rep(j, 1, m + 1) {
+				cin >> ar[i][j];
+				if(ar[i][j] == 'A')
+					start = {i, j};
+				if(ar[i][j] == 'B')
+					end = {i, j};
+			}
+		}
+		bfs(start.ff, start.ss, 0, end.ff, end.ss);
+		if(!dis[end.ff][end.ss]) 
+			cout << "NO\n";
+		else {
+			cout << "YES\n";
+			cout << dis[end.ff][end.ss] << "\n";
+			printPath(start.ff, start.ss, end.ff, end.ss);
+		}
+	}
 	return 0;
 }

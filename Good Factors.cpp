@@ -43,18 +43,43 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vi pr = {1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
+int dp[1<<13][1001];
+
+void bitmask(ll mask) {
+	vi v;
+	rep(i, 0, 13) {
+		if(mask & (1 << i))
+			v.pb(pr[i]);
+	}
+	rep(i, 1, 1001) {
+		dp[mask][i] = 2000;
+		rep(j, 0, int(v.size())) {
+			if(v[j] > i)
+				break;
+			dp[mask][i] = min(dp[mask][i], dp[mask][i - v[j]] + 1);
+		}
+	}
+}
 
 void solve() {
-	int n, mx = 0;
+	int n;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	rep(i, 0, 1 << 13) {bitmask(i);}
+	vll a(n), b(n);
+	rep(i, 0, n) {cin >> a[i];}
+	ll ans = 0;
+	rep(i, 0, n) {
+		int mask = 0;
+		rep(j, 0, 13) {
+			if(a[i] % pr[j] == 0) {
+				mask |= (1 << j);
+			}
+		}
+		cin >> b[i];
+		ans += dp[mask][b[i]];
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	cout << ans << "\n";
 }
 
 int main() {
@@ -64,7 +89,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

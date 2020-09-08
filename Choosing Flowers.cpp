@@ -45,16 +45,37 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int> > fl(m, vector<int> (2));
+	vi a(m);
+	rep(i, 0, m) {
+		cin >> fl[i][0] >> fl[i][1];
+		a[i] = fl[i][0];
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	sort(all(a));
+	vll suff(m + 1, 0);
+	for(int i = m - 1; i >= 0; i--) {
+		suff[i] = suff[i + 1] + a[i];
+	}
+	ll ans = 0;
+	rep(i, 0, m) {
+		ll sum = 0;
+		ll p = ub(all(a), fl[i][1]) - a.begin();
+		ll cnt = m - p;
+		sum = suff[p];
+		if(fl[i][0] <= fl[i][1]) {
+			sum += fl[i][0];
+			cnt++;
+		}
+		if(cnt >= n) {
+			ans = max(ans, suff[m - n]);
+		}
+		else {
+			ans = max(ans, sum + (n - cnt) * fl[i][1]);
+		}
+	}	
+	cout << ans << "\n";
 }
 
 int main() {

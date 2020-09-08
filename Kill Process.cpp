@@ -7,7 +7,7 @@ struct custom_hash;
 #define ff first
 #define I insert
 #define ss second
-#define maxN 300002
+#define maxN 100005
 #define inf INT_MAX
 #define ninf INT_MIN
 #define pb push_back
@@ -43,18 +43,41 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vi ar[maxN], cp, inEdge(maxN);
+
+void kahn(int node) {
+	queue<int> q;
+	q.push(node);
+	inEdge[node] = 0;
+	//cp.pb(node);
+	while(!q.empty()) {
+		int curr = q.front();
+		cp.pb(curr);
+		q.pop();
+		for(int child : ar[curr]) {
+			q.push(child);
+			inEdge[child]--;
+		}
+	}
+}
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	int n, k, u;
+	cin >> n >> k;
+	vi a(n + 2);
+	rep(i, 0, n) {
+		cin >> a[i];
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	rep(i, 0, n) {
+		cin >> u;
+		ar[u].pb(a[i]);
+		inEdge[a[i]]++;
+	}
+	kahn(k);	
+	sort(all(cp));
+	rep(i, 0, int(cp.size()))
+	cout << cp[i] << " ";
+	cout << "\n";
 }
 
 int main() {
@@ -64,7 +87,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

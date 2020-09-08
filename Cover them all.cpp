@@ -17,7 +17,7 @@ struct custom_hash;
 #define ub upper_bound
 #define lb lower_bound
 #define popf pop_front
-#define mod 1000000007
+#define mod 1000000007LL
 #define vi vector<int> 
 #define mll map<ll, ll>
 #define vll vector <ll>
@@ -45,16 +45,23 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
+	ll n;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	vll x(n), b(n);
+	rep(i, 0, n) {
+		cin >> x[i];
+	}	
+	rep(i, 0, n) {
+		cin >> b[i];
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	ll ans = 0;
+	rep(i, 0, n - 1) {
+		rep(j, i + 1, n) {
+			ll dis = abs(x[i] - x[j]);
+			ans = (ans + dis * max(b[i], b[j])) % mod;
+		}
+	}
+	cout << ans << '\n';
 }
 
 int main() {

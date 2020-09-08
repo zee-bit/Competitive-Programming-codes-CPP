@@ -1,3 +1,43 @@
+// Naive O(n^2) solution using pragmas
+
+#pragma GCC optimize("Ofast")
+#pragma GCC target("avx,avx2,fma")
+#pragma GCC optimization("unroll-loops")
+ 
+#include <bits/stdc++.h> 	
+using namespace std;
+#define pb push_back
+#define mp make_pair
+#define FAST ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+typedef long long ll;
+typedef long double ld;
+const ll INF = 2e18;
+ 
+ 
+int main() {
+	FAST;
+	ll t; cin >> t;
+	while(t--) {
+		ll n, i, j; cin >> n;
+		ll tab[n], x, ans = 0, pre[n + 1];
+		string s; cin >> s;
+		for(i = 0; i < n; i++) {
+			tab[i] = s[i] - '0';
+		}
+		for(i = 1; i <= n; i++) {
+			pre[i] = pre[i - 1] + tab[i - 1];
+		}
+		for(i = 1; i <= n; i++) {
+			for(j = i; j <= n; j++) {
+				ans += (pre[j] - pre[i - 1] == j - i + 1);
+			}
+		}
+		cout << ans << "\n";
+	}
+	return 0;
+}
+
+// Optimal O(n) solution 
 #include <bits/stdc++.h>
 using namespace std;
 using namespace std::chrono;
@@ -45,16 +85,21 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
-	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+    int n, sum = 0, ans = 0;
+    string s;
+    cin >> n >> s;
+    map<int, int> fre;
+    // If we dont take any element, then size = 0, sum = 0
+    fre[0] = 1;
+    rep(i, 0, int(s.length())) {
+    	sum += s[i] - '0' - 1;
+    	// If that sum was previously encoutered, 
+    	// then sum from previous position to now
+    	// will also be 0, because sum again came same. 
+    	ans += fre[sum];
+    	fre[sum]++;
+    }
+    cout << ans << "\n";
 }
 
 int main() {

@@ -45,16 +45,36 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	int k, l, mx = 0, sp = 0;
+	string s;
+	cin >> k >> s;
+	l = s.length();
+	queue<int> q;
+	rep(i, 0, l) {
+		if(s[i] == 'y')
+			q.push(i);
+		if(q.size() > k) {
+			mx = max(mx, int(i - sp));
+			sp = q.front() + 1;
+			q.pop();
+		}
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	mx = max(mx, l - sp);
+	while(!q.empty())
+		q.pop();
+	// assert(q.size() == 0);
+	sp = 0;
+	rep(i, 0, l) {
+		if(s[i] == 'x')
+			q.push(i);
+		if(q.size() > k) {
+			mx = max(mx, int(i - sp));
+			sp = q.front() + 1;
+			q.pop();
+		}
+	}
+	mx = max(mx, l - sp);
+	cout << mx << "\n";
 }
 
 int main() {
@@ -64,7 +84,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

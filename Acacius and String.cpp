@@ -43,18 +43,63 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+// Important Edge Case ->
+// 1
+// 13
+// abacab?bacaba
+
+string comp = "abacaba";
+
+int countSS(string &s) {
+	int len = s.size(), cnt = 0;
+	rep(i, 0, len) {
+		if(s.substr(i, comp.size()) == comp)
+			cnt++;
+	}
+	return cnt;
+}
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	int n, cnt, len;
+	string s;
+	cin >> n >> s;
+	len = s.length();
+	cnt = countSS(s);
+	//cout << cnt << "\n";
+	if(cnt > 1) {
+		cout << "NO\n";
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	else if(cnt == 1) {
+		cout << "YES\n";
+		rep(i, 0, len) {
+			if(s[i] == '?')
+				s[i] = 'z';
+		}
+		cout << s << "\n";
+	}
+	else {	
+		for(int i = 0; i + comp.size() <= n; i++) {
+			string ss = s;
+			bool ok = true;
+			for(int j = 0; j < comp.size(); j++) {
+				if(ss[i + j] != '?' && ss[i + j] != comp[j]) {
+					ok = false;
+					break;
+				}
+				ss[i + j] = comp[j];
+			}
+			if(ok && countSS(ss) == 1) {
+				rep(j, 0, n) {
+					if(ss[j] == '?')
+						ss[j] = 'z';
+				}
+				cout << "YES\n";
+				cout << ss << "\n";
+				return;
+			}
+		}
+		cout << "NO\n";
+	}
 }
 
 int main() {

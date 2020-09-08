@@ -1,3 +1,6 @@
+/************************************************
+				Author -> zean_7
+************************************************/
 #include <bits/stdc++.h>
 using namespace std;
 #define MOD 1000000007
@@ -5,10 +8,20 @@ using namespace std;
 typedef long long ll;
 
 //----------------------------------------------
-// Checking whether i'th bit is set or not!
+// Bit Manipulation
 //----------------------------------------------
-void checkSetBit(int n, int i) {
-	cout << (n & (1 << i) ? "Yes" : "No");
+void bitManipulate(int n) {
+	// 1. Extracting i'th bit of number
+	int ithBit = (n & (1 << i));
+
+	// 2. Setting i'th bit of a number 
+	(n | (1 << i));
+
+	// 3. Resetting i'th bit of a number
+	(n & (~(1 << i)))
+
+	// 4. Creating mask of first set bit of a number
+	(n & (~(n - 1)))
 }
 
 //----------------------------------------------
@@ -34,6 +47,24 @@ int countSetBits(int n) {
 	}
 	return ans;
 }
+
+//-----------------------------------------------
+// Sometimes using inbuilt ceil function may lead
+// to WA, because it outputs float values. Try using
+// this instead of ceil(A / B)
+//-----------------------------------------------
+ceil(a / b) = (a + b - 1) / b;
+
+
+// VERY IMPORTANT
+//------------------------------------------------
+// Pragmas in GCC can optimize your code almost x8
+// times. So, even an O(n^2) naive solution MAY
+// get accepted under 2sec. 
+//------------------------------------------------
+#pragma GCC optimize("Ofast")
+#pragma GCC target("avx,avx2,fma")
+#pragma GCC optimization("unroll-loops")
 
 //----------------------------------------------
 //Fast Exponentiation [(base^exp) % mod]
@@ -66,6 +97,14 @@ ll mod_mul(ll a, ll b, ll mod) {
 	return x;
 }
 
+// IMPORTANT....Gave many WA. XD
+//-----------------------------------------------
+// When subtracting two mod'ed values, if the answer
+// becomes negative, add mod to the answer.
+// e.g. if [(2 ^ n) % mod - (n!) % mod] < 0, then
+// add mod to the result.
+//-----------------------------------------------
+
 //-----------------------------------------------
 //Euclid's GCD Algorithm (Basic)
 //-----------------------------------------------
@@ -92,6 +131,21 @@ int gcdExtended(int a, int b, int *x, int *y) {
 
 	return gcd;
 }
+
+//Method 3: Recursive
+int gcdExtended(int a, int b, int& x, int& y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int x1, y1;
+    int d = gcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return d;
+}
+
 //Method 2: Using Tuples from STL
 tuple<int, int, int> extended_gcd(int a, int b) {
 	if (a == 0)
@@ -110,20 +164,13 @@ tuple<int, int, int> extended_gcd(int a, int b) {
 //-----------------------------------------------
 
 //-----------------------------------------------
-// Sometimes using inbuilt ceil function may lead
-// to WA, because it outputs float values. Try using
-// this instead of ceil(A / B)
-//-----------------------------------------------
-ceil(a / b) = (a + b - 1) / b;
-
-//-----------------------------------------------
 // 2-D vector declaration of size N x N
 //-----------------------------------------------
 vector<vector<int> > a(N, vector<int>(N, 0));
 
 //-----------------------------------------------
 // For printing large float values without their
-// scientific notation (e.g. 1.67543e002)
+// scientific notation (i.e. not like 1.67543e002)
 //-----------------------------------------------
 cout << fixed << setprecision(9) << your_output;
 
@@ -142,7 +189,7 @@ void sieve(int n) {
 }
 
 //-----------------------------------------------
-//Sieve of Eratosthenes   [O(n)]
+//Sieve of Eratosthenes   (Queried)
 //-----------------------------------------------
 void fast_sieve(int n) {
 	vector<int> pr, lp(n + 1);
@@ -317,6 +364,28 @@ int nCr(int n, int r) {
 	return p;
 }
 
+//------------------------------------------
+// Longest Increasing Subsequence O(NlogN)
+//------------------------------------------
+int lis(vector<int> const& a) {
+    int n = a.size();
+    const int INF = 1e9;
+    vector<int> d(n+1, INF);
+    d[0] = -INF;
+
+    for (int i = 0; i < n; i++) {
+        int j = upper_bound(d.begin(), d.end(), a[i]) - d.begin();
+        if (d[j-1] < a[i] && a[i] < d[j])
+            d[j] = a[i];
+    }
+
+    int ans = 0;
+    for (int i = 0; i <= n; i++) {
+        if (d[i] < INF)
+            ans = i;
+    }
+    return ans;
+}
 
 //------------------------------------------
 // Tower of Hanoi (Recursion)
@@ -405,6 +474,7 @@ bool dfs(int v, int parent) {
 
 //----------------------------------------------
 // In / Out Time for vertices of a graph
+// Eulers Tour
 //----------------------------------------------
 int inTime[maxN], outTime[maxN], timer = 1;
 bool visited[maxN];
@@ -436,21 +506,8 @@ int dfs(int node) {
 	return curr_size;
 }
 
-// Might be incorrect...Check Once!!
-void dfs(int node) {
-	vis[node] = true;
-	int curr_size = 1;
-	for (int child : ar[node]) {
-		if (!vis[child]) {
-			dfs(child);
-			subSize[node] += subSize[child];
-		}
-	}
-	subSize[node] += curr_size;
-}
-
 //----------------------------------------------
-// Single Source Shortest Path
+// Single Source Shortest Path (SSSP)
 //----------------------------------------------
 bool vis[maxN];
 int dis[maxN];
@@ -552,4 +609,140 @@ void dfs(int node, int par = -1) {
 	}
 	if (par == -1 && children > 1)
 		cut_verts.pb(node);
+}
+
+//-------------------------------------------------
+// Kahn's Algorithm for Topological Sorting
+//-------------------------------------------------
+vector<int> ar[maxN], topSort(maxN), inEdge(maxN);
+
+void kahn(int src) {
+	queue<int> q;
+	for (int i = 1; i <= n; i++) {
+		if (inEdge[i] == 0)
+			q.push(i);
+	}
+	while (!q.empty()) {
+		int curr = q.front();
+		topSort.push_back(curr);
+		q.pop();
+
+		for (int child : ar[curr]) {
+			inEdge[child]--;
+			if (inEdge[child] == 0)
+				q.push(child);
+		}
+	}
+	cout << "Topological Sort ->";
+	for (int node : topSort)
+		cout << node << " ";
+}
+
+void makeTree() {
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		ar[u].push_back(v);
+		inEdge[v]++;
+	}
+	kahn(1);
+}
+
+//----------------------------------------------------
+// Least Common Ancestor(LCA) using Binary Lifting 
+// in case of queried input. 
+// Preprocessing -> O(Nlog(N))
+// Query OP -> O(log(n))
+//----------------------------------------------------
+// LCA[i][j] = (2^j)th Parent of Node i.
+const int l = ceil(log2(maxN));
+int LCA[maxN][l + 1], n;
+vi ar[maxN], level(maxN);
+
+void dfs(int node, int par, int lvl = 0) {
+	LCA[node][0] = par;
+	level[node] = lvl;
+	for(int child : ar[node]) {
+		if(child != par)
+			dfs(child, node, lvl + 1);
+	}
+}
+
+void preCompute() {
+	dfs(1, -1);
+	rep(j, 1, l + 1) {
+		rep(i, 1, n + 1) {
+			if(LCA[i][j - 1] != -1) {
+				int par = LCA[i][j - 1];
+				LCA[i][j] = LCA[par][j - 1];
+			}
+		}
+	}
+}
+
+int lca(int a, int b) {
+	if(level[b] < level[a])	swap(a, b);
+	int d = level[b] - level[a];
+	while(d > 0) {
+		int i = log2(d);
+		b = LCA[b][i];
+		d -= (1 << i);
+	}
+	if(a == b)
+		return a;
+
+	for(int i = l; i >= 0; i--) {
+		if(LCA[a][i] != -1 && (LCA[a][i] != LCA[b][i]))
+			a = LCA[a][i], b = LCA[b][i];
+	}
+	return LCA[a][0];
+}
+// If it is required to find the distance between 
+// two given nodes then,
+// dist = level[a] + level[b] - 2 * level[LCA]
+int getDist(int a, int b) {
+	return level[a] + level[b] - 2 * level[lca(a, b)];
+}
+
+
+//----------------------------------------------------
+// Dijkstra's Algorithm for Shortest Path from given 
+// vertex. Using Priority queue
+//----------------------------------------------------
+// adj[i] = Pair of nodes connected with i having 
+// weight w of the form {node, w};
+vector<pair<int, int> > adj[maxN];
+
+void dijkstra() {
+	int n, m, a, b, w;
+	rep(i, 0, n) adj[i].clear();
+	cin >> n >> m;
+	rep(i, 0, m) {
+		cin >> a >> b >> w;
+		adj[a].pb({b, w});
+		adj[b].pb({a, w});
+	}
+
+	// Pair of {distance, node} 
+	priority_queue<pair<int, int>, vector<pair<int, int> >, greater<pair<int, int> > > pq;
+	vector<int> dis(n + 1, inf);
+	pq.push({0, 1});
+	dis[1] = 0;
+
+	while(!pq.empty()) {
+		int currNode = pq.top().ss;
+		int currDis = pq.top().ff;
+		pq.pop();
+		for(auto child : adj[currNode]) {
+			if(currDis + child.ss < dis[child.ff]) {
+				dis[child.ff] = currDis + child.ss;
+				pq.push({dis[child.ff], child.ff});
+			}
+		}
+	}
+	rep(i, 1, n + 1) {
+		cout << dis[i] << " ";
+	}
 }

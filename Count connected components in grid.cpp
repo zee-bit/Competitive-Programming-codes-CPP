@@ -43,29 +43,49 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+char ar[1001][1001];
+int n, m;
+bool vis[1001][1001];
 
-void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+bool isValid(int x, int y) {
+	if(x < 0 || x > n - 1 || y < 0 || y > m - 1)
+		return false;
+	if(vis[x][y] || ar[x][y] == '#')
+		return false;
+	return true;
+}
+
+void dfs(int x, int y) {
+	vis[x][y] = true;
+	//cout << x << " " << y << "\n";
+	rep(i, 0, 4) {
+		if(isValid((x + dx4[i]), (y + dy4[i])))
+			dfs(x + dx4[i], y + dy4[i]);
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
 }
 
 int main() {
 	fast;
-	#ifndef ONLINE_JUDGE
-  		freopen("input.txt", "r", stdin);
-  		freopen("output.txt", "w", stdout);
-	#endif
-	int t = 1;
-	cin >> t;
-	while(t--)
-		solve();
+	// #ifndef ONLINE_JUDGE
+ //  		freopen("input.txt", "r", stdin);
+ //  		freopen("output.txt", "w", stdout);
+	// #endif
+	//int n, m;
+	cin >> n >> m;
+	rep(i, 0, n) {
+		rep(j, 0, m) {
+			cin >> ar[i][j];
+		}
+	}
+	int cc = 0;
+	rep(i, 0, n) {
+		rep(j, 0, m) {
+			if(ar[i][j] == '.' && !vis[i][j]) {
+				dfs(i, j);
+				cc++;
+			}
+		}
+	}
+	cout << cc << "\n";
 	return 0;
 }

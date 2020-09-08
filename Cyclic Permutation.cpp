@@ -43,18 +43,30 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+ll fast_exp(ll base, ll exp, ll MOD) {
+	ll res = 1;
+	while (exp) {
+		if (exp % 2) res = (res * base) % MOD;
+		base = (base * base) % MOD;
+		exp /= 2;
+	}
+	return res;
+}
 
 void solve() {
-	int n, mx = 0;
+	ll n, fac, sub;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	fac = 1;
+	rep(i, 2, n + 1) {
+		fac = mul(fac, i, mod);
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	fac %= mod;
+	sub = fast_exp(2, n - 1, mod);
+	sub %= mod;
+	fac -= sub;
+	if(fac < 0)
+		fac += mod;
+	cout << fac << "\n";
 }
 
 int main() {
@@ -64,7 +76,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

@@ -43,18 +43,48 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+struct edge {
+	int a, b, w;
+};
+
+edge ar[100001];
+int par[10001];
+
+bool comp(edge a, edge b) {
+	if(a.w < b.w)
+		return true;
+	return false;
+}
+
+void merge(int a, int b) {
+	par[a] = b;
+}
+
+int find(int a) {
+	if(par[a] == -1)
+		return a;
+	return par[a] = find(par[a]);
+}
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	int n, m, sum = 0;
+	cin >> n >> m;
+	rep(i, 0, m) {
+		par[i] = -1;
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	rep(i, 0, m) {
+		cin >> ar[i].a >> ar[i].b >> ar[i].w;
+	}
+	sort(ar, ar + m, comp);
+	rep(i, 0, m) {
+		int a = find(ar[i].a);
+		int b = find(ar[i].b);
+		if(a != b) {
+			sum += ar[i].w;
+			merge(a, b);
+		}
+	}
+	cout << sum << '\n';
 }
 
 int main() {
@@ -64,7 +94,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

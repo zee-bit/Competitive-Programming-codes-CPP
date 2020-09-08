@@ -21,13 +21,9 @@ struct custom_hash;
 #define vi vector<int> 
 #define mll map<ll, ll>
 #define vll vector <ll>
-const int dx4[]={-1,0,1,0};
-const int dy4[]={0,1,0,-1};
 #define vvi vector<vector<int> >
 #define all(v) v.begin(), v.end()
 #define rall(v) v.rbegin(), v.rend()
-const int dx8[]={-1,-1,-1,0,1,1,1,0,-1};
-const int dy8[]={-1,0,1,1,1,0,-1,-1,-1};
 #define ust unordered_set<ll, custom_hash>
 #define rep(i, a, b) for(ll i = a; i < b; i++)
 #define umll unordered_map<ll, ll, custom_hash>
@@ -43,18 +39,37 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vi ar[maxN], vis(maxN);
+int maxD = -1, maxNode;
+
+void dfs(int node, int d) {
+	vis[node] = 1;
+	if(d > maxD) {
+		maxD = d;
+		maxNode = node;
+	}
+	for(int child : ar[node]) {
+		if(!vis[child]) {
+			dfs(child, d + 1);
+		}
+	}
+}
 
 void solve() {
-	int n, mx = 0;
+	int n, u, v;
 	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	rep(i, 1, n) {
+		cin >> u >> v;
+		ar[u].pb(v);
+		ar[v].pb(u);
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	dfs(1, 0);
+	maxD = -1;
+	rep(i, 1, n + 1) {
+		vis[i] = 0;
+	}
+	dfs(maxNode, 0);
+	cout << 3 * maxD << "\n";
 }
 
 int main() {
@@ -64,7 +79,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

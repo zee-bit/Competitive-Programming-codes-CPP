@@ -43,18 +43,38 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+int n, m;
+char ar[1005][1005];
+bool vis[1005][1005];
+int dis[1005][1005];
 
-void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+bool isValid(int x, int y) {
+	if(x < 1 || x > n || y < 1 || y > n)
+		return false;
+	if(vis[x][y] || ar[x][y] == 'T')
+		return false;
+	return true;
+}
+
+void bfs(int srcX, int srcY, int d) {
+	queue<pair<int, int> > q;
+	q.push({srcX, srcY});
+	vis[srcX][srcY] = true;
+	dis[srcX][srcY] = d;
+	while(!q.empty()) {
+		int currX = q.front().ff;
+		int currY = q.front().ss;
+		q.pop();
+		for(int i = 0; i < 4; i++) {
+			if(isValid(currX + dx4[i], currY + dy4[i])) {
+				int newX = currX + dx4[i];
+				int newY = currY + dy4[i];
+				q.push({newX, newY});
+				vis[newX][newY] = true;
+				dis[newX][newY] = dis[currX][currY] + 1;
+			}
+		}
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
 }
 
 int main() {
@@ -64,8 +84,21 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
-	while(t--)
-		solve();
+	//cin >> t;
+	while(t--) {
+		cin >> n;
+		pair<int, int> start, end;
+		rep(i, 1, n + 1) {
+			rep(j, 1, n + 1) {
+				cin >> ar[i][j];
+				if(ar[i][j] == 'S')
+					start = {i, j};
+				if(ar[i][j] == 'E')
+					end = {i, j};
+			}
+		}
+		bfs(start.first, start.second, 0);
+		cout << dis[end.first][end.second] << "\n";
+	}
 	return 0;
 }

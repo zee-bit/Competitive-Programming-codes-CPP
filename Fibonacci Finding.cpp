@@ -9,7 +9,7 @@ void mul(ll a[][2], ll b[][2]) {
     for (int j = 0; j < 2; j++) {
       res[i][j] = 0;
       for (int k = 0; k < 2; k++)
-        res[i][j] = ((res[i][j] % mod) + ((a[i][k] *                                b[k][j]) % mod)) % mod;
+        res[i][j] = ((res[i][j] % mod) + ((a[i][k] * b[k][j]) % mod)) % mod;
     }
   }
   for (int i = 0; i < 2; i++) {

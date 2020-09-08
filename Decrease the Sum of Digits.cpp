@@ -43,18 +43,51 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+ll sumDigs(ll n) {
+	ll sum = 0;
+	while(n > 0) {
+		ll d = n % 10;
+		sum += d;
+		n /= 10;
+	}
+	return sum;
+}
+
+ll numDig(ll n) {
+	ll cnt = 0;
+	while(n > 0) {
+		cnt++;
+		n /= 10;
+	}
+	return cnt;
+}
 
 void solve() {
-	int n, mx = 0;
-	cin >> n;
-	vi a(n), freq(n + 1, 0);
-	rep(i, 0, n) {cin >> a[i];freq[a[i]]++;}
-	sort(all(freq), greater<int>());
-	rep(i, 0, n + 1) {
-		if(freq[i] == freq[0])
-			mx++;
+	ll n, s;
+	cin >> n >> s;
+	if(sumDigs(n) <= s) {
+		cout << "0\n";
 	}
-	cout << (n - mx) / (freq[0] - 1) - 1 << "\n";
+	else {
+		ll ans = 0, digs = numDig(n), chk = n;
+		for(ll i = 1; i <= digs; i++) {
+			ll den = pow(10, i - 1);
+			ll ldig = chk % 10;
+			if(ldig == 0) {
+				chk /= 10;
+				continue;
+			}
+			ll rem = 10 - ldig;
+			ans += rem * den;
+			if(sumDigs(n + (rem * den)) <= s) {
+				cout << ans << "\n";
+				break;
+			}
+			n += rem * den;
+			chk /= 10;
+			chk++;
+		}
+	}
 }
 
 int main() {
