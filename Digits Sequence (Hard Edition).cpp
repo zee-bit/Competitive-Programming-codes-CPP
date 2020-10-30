@@ -45,9 +45,22 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	ll k, firstDig = 1, divide = 9, cntDigs = 1;
+	cin >> k;
+	while(k > (cntDigs * divide)) {
+		k -= (cntDigs * divide);
+		divide *= 10;
+		cntDigs++;
+		firstDig *= 10;
+	}
+	firstDig += (k - 1) / cntDigs;
+
+	int position = cntDigs - ((k - 1) % cntDigs) - 1;
+	while(position > 0) {
+		firstDig /= 10;
+		position--;
+	}
+	cout << firstDig % 10 << " \n";
 }
 
 int main() {
@@ -57,7 +70,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

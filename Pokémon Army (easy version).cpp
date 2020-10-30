@@ -1,3 +1,4 @@
+// This problem is very similar to buy/sell stocks problem
 #include <bits/stdc++.h>
 using namespace std;
 using namespace std::chrono;
@@ -45,9 +46,17 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n, q;
+	cin >> n >> q;
+	vll a(n);
+	rep(i, 0, n) {cin >> a[i];}
+	ll buyNow, sellNow;
+	buyNow = 0, sellNow = 0;
+	for(int i = 0; i < n; i++) {
+		buyNow = max(sellNow - a[i], buyNow);
+		sellNow = max(buyNow + a[i], sellNow);
+	}
+	cout << sellNow << "\n";
 }
 
 int main() {
@@ -62,3 +71,4 @@ int main() {
 		solve();
 	return 0;
 }
+	

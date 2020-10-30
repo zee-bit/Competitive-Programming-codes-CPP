@@ -43,11 +43,43 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+struct coordinates {
+	int x, y;
+};
+
+bool comparatorx(coordinates const& c1, coordinates const& c2) {
+    return c1.x < c2.x;
+}
+
+bool comparatory(coordinates const& c1, coordinates const& c2) {
+    return c1.y < c2.y;
+}
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n, k;
+	//vi x(n), y(n);
+	cin >> n;
+	vector<coordinates> c(n);
+	rep(i, 0, n) {cin >> c[i].x;}
+	rep(i, 0, n) {cin >> c[i].y;}
+	cin >> k;
+	sort(all(c), &comparatorx);
+	//rep(i, 0, n) {cout << c[i].x << " " << c[i].y << "\n";}
+	//sort(all(y));
+	int ans = inf, per = 0;
+	rep(i, 0, n) {
+		per = 2 * (abs(c[i + k - 1].x - c[i].x + 1) + abs(c[i + k - 1].y - c[i].y + 1));
+		ans = min(ans, per);
+		i += k;
+	}
+	sort(all(c), &comparatory);
+	//rep(i, 0, n) {cout << c[i].x << " " << c[i].y << "\n";}
+	rep(i, 0, n) {
+		per = 2 * (abs(c[i + k - 1].x - c[i].x + 1) + abs(c[i + k - 1].y - c[i].y + 1));
+		ans = min(ans, per);
+		i += k;
+	}
+	cout << ans << "\n";
 }
 
 int main() {
@@ -57,7 +89,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

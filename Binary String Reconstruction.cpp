@@ -2,65 +2,89 @@
 using namespace std;
 using namespace std::chrono;
 typedef long long ll;
-
-// unhackable custom hash for unordered_map
-// Credits : neil
-struct custom_hash {
-	size_t operator()(uint64_t x) const {
-		static const uint64_t FIXED_RANDOM =
-		    chrono::steady_clock::now().time_since_epoch().count();
-		x ^= FIXED_RANDOM;
-		return x ^ (x >> 16);
-	}
-};
-
-//==========================XXXXXXXXXXXXXXXX=============================
-
-#define rep(i, n) for(ll i = 0; i < n; i++)
-#define all(x) x.begin(), x.end()
+typedef long double ld;
+struct custom_hash;
+#define ff first
+#define I insert
+#define ss second
+#define maxN 300002
+#define inf INT_MAX
+#define ninf INT_MIN
 #define pb push_back
+#define popb pop_back
+#define pf push_front
+#define pi 3.14159265
+#define ub upper_bound
+#define lb lower_bound
+#define popf pop_front
+#define mod 1000000007
+#define vi vector<int> 
+#define mll map<ll, ll>
+#define vll vector <ll>
+const int dx4[]={-1,0,1,0};
+const int dy4[]={0,1,0,-1};
+#define vvi vector<vector<int> >
+#define all(v) v.begin(), v.end()
+#define rall(v) v.rbegin(), v.rend()
+const int dx8[]={-1,-1,-1,0,1,1,1,0,-1};
+const int dy8[]={-1,0,1,1,1,0,-1,-1,-1};
+#define ust unordered_set<ll, custom_hash>
+#define rep(i, a, b) for(ll i = a; i < b; i++)
+#define umll unordered_map<ll, ll, custom_hash>
+#define fast ios_base::sync_with_stdio(false);cin.tie(NULL);
+struct custom_hash { size_t operator()(uint64_t x) const { static const uint64_t FIXED_RANDOM =
+chrono::steady_clock::now().time_since_epoch().count();x ^= FIXED_RANDOM;return x ^ (x >> 16);}};
+ll power(ll x,ll n) {ll result=1; while(n) {if(n%2==1) result=result*x; n=n/2; x=x*x;} return result;}
+ll gcd(ll a, ll b) {return b ? gcd(b, a%b) : a;} 
+ll lcm(ll a , ll b){return (a*b)/gcd(a,b);}
+ll BS(ll a[],ll s,ll n,ll val) {ll mid,beg=s,end=n-1; while(beg<=end)
+{mid=(beg+end)/2; if(val==a[mid]){break;} else if(val>a[mid]){beg=mid+1;}else{end=mid-1;}} return mid;}
+inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
+ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
+
+//========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n1, n2, n3;
-	cin >> n1 >> n2 >> n3;
-	if (n2 == 0) {
-		if (n1 > 0) {
-			rep(i, n1 + 1)
-			cout << "0";
+	int x, len;
+	string s, w;
+	cin >> s >> x;
+	len = s.length();
+	w.resize(len, '1');
+	bool flag = true;
+	rep(i, 0, len) {
+		if(s[i] == '0') {
+			if(i >= x)
+				w[i - x] = '0';
+			if(i + x < len)
+				w[i + x] = '0';
 		}
-		if (n3 > 0) {
-			rep(i, n3 + 1)
-			cout << "1";
-		}
-		cout << "\n";
 	}
-	else {
-		string z = "", o = "";
-		rep(i, n1)
-		z += '0';
-		rep(i, n3)
-		o += '1';
-		cout << "1" << o << "0" << z;
-		rep(i, n2 - 1) {
-			if (i % 2 == 0)
-				cout << "1";
-			else
-				cout << "0";
+	rep(i, 0, len) {
+		int cnt = 0;
+		if(s[i] == '1') {
+			if(i >= x && w[i - x] == '1')
+				cnt++;
+			if(i + x < len && w[i + x] == '1')
+				cnt++;
+			if(cnt == 0) {
+				flag = false;
+				break;
+			}
 		}
-		cout << "\n";
 	}
+	if(flag) {cout << w << "\n";}
+	else {cout << -1 << "\n";}
 }
 
 int main() {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-#ifndef ONLINE_JUDGE
-	freopen("input.txt", "r", stdin);
-	freopen("output.txt", "w", stdout);
-#endif
-	int t;
+	fast;
+	#ifndef ONLINE_JUDGE
+  		freopen("input.txt", "r", stdin);
+  		freopen("output.txt", "w", stdout);
+	#endif
+	int t = 1;
 	cin >> t;
-	while (t--)
+	while(t--)
 		solve();
 	return 0;
 }

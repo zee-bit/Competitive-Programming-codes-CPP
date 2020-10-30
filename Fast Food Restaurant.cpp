@@ -45,9 +45,45 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int a, b , c, mx = 0, mn = inf; 
+	cin >> a >> b >> c;
+	mx = max(a, max(b, c));
+	mn = min(a, min(b, c));
+	if(mx == 0) {cout << 0 << "\n";}
+	else if(mn >= 4) {cout << 7 << "\n";}
+	else {
+		int ans = 0;
+		if (a > b) swap(a, b);
+		if (a > c) swap(a, c);
+		if (b > c) swap(b, c);
+		// cout << a << " " << b << " " << c << "\n";
+
+		ans = (a-- > 0) + (b-- > 0) + (c-- > 0);
+
+		if(b > 0 && c > 0) {ans++; --b, --c;}
+		if(a > 0 && c > 0) {ans++; --a, --c;}
+		if(a > 0 && b > 0) {ans++; --a, --b;}
+
+		cout << ans << "\n";
+	}
+
+	// if (a < b) swap(a, b);
+	// if (a < c) swap(a, c);
+	// if (b < c) swap(b, c);
+
+	// int res = 0;
+
+	// if (c) res++, c--;
+	// if (b) res++, b--;
+	// if (a) res++, a--;
+
+	// if (a && b) res++, a--, b--;
+	// if (a && c) res++, a--, c--;
+	// if (b && c) res++, b--, c--;
+
+	// if (a && b && c) res++, a--, b--, c--;
+
+	// cout << res << endl;
 }
 
 int main() {

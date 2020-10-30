@@ -43,11 +43,26 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+ll dp1[26], dp2[26][26];
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	string s;
+	ll ans = 0;
+	cin >> s;
+	rep(i, 0, int(s.length())) {
+		ll ch = s[i] - 'a';
+		rep(j, 0, 26) {
+			dp2[j][ch] += dp1[j];
+		}
+		dp1[ch]++;
+	}
+	rep(i, 0, 26) {
+		rep(j, 0, 26) {
+			ans = max(ans, dp2[i][j]);
+		}
+		ans = max(ans, dp1[i]);
+	}
+	cout << ans << "\n";
 }
 
 int main() {
@@ -57,7 +72,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

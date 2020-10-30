@@ -45,9 +45,27 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int k, c = 1;
+	cin >> k;
+	while(true) {
+		int temp = c;
+		vi store;
+		while(temp > 0) {
+			int d = temp % 10;
+			store.pb(d);
+			temp /= 10;
+		}
+		reverse(all(store));
+		for(auto it : store) {
+			--k;
+			if(k == 0) {
+				cout << it << "\n";
+				return;
+			}
+		}
+		store.clear();
+		c++;
+	}
 }
 
 int main() {
@@ -57,7 +75,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

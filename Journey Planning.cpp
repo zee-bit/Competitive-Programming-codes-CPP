@@ -45,9 +45,19 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n;
+	cin >> n;
+	vi b(n);
+	rep(i, 0, n) {cin >> b[i];}
+	mll mp;
+	rep(i, 0, n) {
+		mp[i - b[i]] += b[i];
+	}
+	ll mx = 0;
+	for(auto iter : mp) {
+		mx = max(mx, iter.ss);
+	}
+	cout << mx << "\n";
 }
 
 int main() {
@@ -57,7 +67,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;

@@ -43,11 +43,35 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+unordered_map<char, ll> mp = {{'a', 0}, {'e', 1}, {'i', 2}, {'o', 3}, {'u', 4}};
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	ll n;
+	vi fr(1LL << 5, 0);
+	cin >> n;
+	string s;
+	rep(i, 0, n) {
+		ll cnt = 0;
+		cin >> s;
+		rep(j, 0, ll(s.length())) {
+			cnt |= (1LL << mp[s[j]]);
+		}
+		fr[cnt]++;
+	}
+	ll ans = 0;
+	rep(i, 0, 1LL << 5) {
+		if(fr[i] > 0) {
+			rep(j, i + 1, 1LL << 5) {
+				if(fr[j] > 0) {
+					if((i | j) == ((1LL << 5) - 1))
+						ans += fr[i] * fr[j];
+				}
+			}
+		}
+	}
+	ll last = fr[((1LL << 5) - 1)];
+	ans += last * (last - 1) / 2;
+	cout << ans << "\n";
 }
 
 int main() {

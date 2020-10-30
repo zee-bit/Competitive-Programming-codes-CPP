@@ -43,11 +43,38 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vector<int> a(10002);
+
+void query(int i, int j) {
+	int res1, res2;
+	cout << "? " << i << " " << j << endl;
+	cin >> res1;
+	cout << "? " << j << " " << i << endl;
+	cin >> res2;
+	if(res1 > res2) {
+		a[i] = res1;
+	}
+	else {
+		a[j] = res2;
+	}
+}
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n;
+	cin >> n;
+	int lo = 1, hi = n;
+	while(lo < hi) {
+		query(lo, hi);
+		if(a[lo]) lo++;
+		else	  hi--;
+	}
+	a[lo] = n;
+	cout << "! ";
+	for(int i = 1; i <= n; i++) {
+		cout << a[i] << " ";
+	}
+	cout << endl;
+	return;
 }
 
 int main() {
@@ -57,7 +84,6 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
 	while(t--)
 		solve();
 	return 0;

@@ -23,13 +23,13 @@ struct custom_hash;
 #define vll vector <ll>
 const int dx4[]={-1,0,1,0};
 const int dy4[]={0,1,0,-1};
-#define vvi vector<vector<int> >
+#define vvll vector<vector<ll> >
 #define all(v) v.begin(), v.end()
 #define rall(v) v.rbegin(), v.rend()
 const int dx8[]={-1,-1,-1,0,1,1,1,0,-1};
 const int dy8[]={-1,0,1,1,1,0,-1,-1,-1};
 #define ust unordered_set<ll, custom_hash>
-#define rep(i, a, b) for(ll i = a; i < b; i++)
+#define rep(i, a, b) for(ll i = a; i < ll(b); i++)
 #define umll unordered_map<ll, ll, custom_hash>
 #define fast ios_base::sync_with_stdio(false);cin.tie(NULL);
 struct custom_hash { size_t operator()(uint64_t x) const { static const uint64_t FIXED_RANDOM =
@@ -45,9 +45,34 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n;
+	cin >> n;
+	vll a(n), f[n + 1];
+	// vvll f(n + 1);
+	rep(i, 0, n) {
+		cin >> a[i];
+		f[a[i]].pb(i + 1);
+	}
+	vll dis[n + 1];
+	rep(i, 1, n + 1) {
+		if(f[i].empty()) continue;
+		ll mx = f[i][0];
+		rep(j, 1, f[i].size()) {
+			mx = max(mx, f[i][j] - f[i][j - 1]);
+		}
+		mx = max(mx, n - f[i].back() + 1);
+		dis[mx].pb(i);
+	}
+	vll ans(n + 1, -1);
+	ll mn = inf;
+	rep(i, 1, n + 1) {
+		rep(j, 0, dis[i].size()) {
+			mn = min(mn, dis[i][j]);
+		}
+		if(mn != inf) ans[i] = mn;
+		cout << ans[i] << " ";
+	}
+	cout << "\n";
 }
 
 int main() {

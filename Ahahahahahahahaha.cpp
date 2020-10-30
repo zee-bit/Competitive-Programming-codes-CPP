@@ -45,9 +45,25 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n, one = 0, zero = 0;
+	cin >> n;
+	vi a(n);
+	rep(i, 0, n) {cin >> a[i];}
+	for(int i = 0; i < n; i++) {
+		if(a[i]) one++;
+		else zero++;
+	}
+	if(one <= (n / 2)) {
+		cout << zero << "\n";
+		rep(i, 0, zero) {cout << "0 ";}
+	}
+	else {
+		if(one & 1) one--;
+		cout << one << "\n";
+		rep(i, 0, one) {cout << "1 ";}
+		
+	}
+	cout << "\n";
 }
 
 int main() {

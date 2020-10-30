@@ -43,30 +43,38 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vll a(100004);
+ll n, c;
+
+bool isPossible(ll size) {
+	ll temp = c - 1, f = 0;
+	rep(i, 0, n) {
+		if(a[i] - a[f] >= size) {
+			f = i;
+			temp--;
+		}
+		if(temp == 0)
+			return true;
+	}
+	return false;
+}
 
 void solve() {
-	int n;
-	cin >> n;
-	vi r(n), p(n);
-	rep(i, 0, n) {cin >> r[i];}
-	rep(i, 0, n) {cin >> p[i];}
-	int sum = 0, div = 0;
-	rep(i, 0, n) {
-		if(r[i] == 1 && p[i] == 0)
-			div++;
-		if(r[i] == 0 && p[i] == 1)
-			sum++;
-	}
-	if(sum == 0 || div == 0) {
-		if(div == 0) {
-			cout << -1 << "\n";
-		} else {
-			cout << 1 << "\n";
+	cin >> n >> c;
+	rep(i, 0, n) {cin >> a[i];}
+	sort(a.begin(), a.begin() + n);
+	// rep(i, 0, n) {cout << a[i] << " ";}
+	ll lo = 0, hi = a[n - 1] - a[0], mid, ans;
+	while(lo <= hi) {
+		mid = lo + (hi - lo) / 2;
+		if(isPossible(mid)) {
+			ans = mid;
+			lo = mid + 1;
 		}
+		else
+			hi = mid - 1;
 	}
-	else {
-		cout << (sum + div) / div << "\n";
-	}
+	cout << ans << "\n";
 }
 
 int main() {
@@ -76,7 +84,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	//cin >> t;
+	cin >> t;
 	while(t--)
 		solve();
 	return 0;

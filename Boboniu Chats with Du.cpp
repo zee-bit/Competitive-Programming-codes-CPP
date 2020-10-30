@@ -45,28 +45,37 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int n;
-	cin >> n;
-	vi r(n), p(n);
-	rep(i, 0, n) {cin >> r[i];}
-	rep(i, 0, n) {cin >> p[i];}
-	int sum = 0, div = 0;
+	int n, d, m;
+	cin >> n >> d >> m;
+	vll a(n), perm;
+	ll sum = 0, ans = 0;
 	rep(i, 0, n) {
-		if(r[i] == 1 && p[i] == 0)
-			div++;
-		if(r[i] == 0 && p[i] == 1)
-			sum++;
+		cin >> a[i];
+		sum += a[i];
 	}
-	if(sum == 0 || div == 0) {
-		if(div == 0) {
-			cout << -1 << "\n";
-		} else {
-			cout << 1 << "\n";
-		}
+	sort(all(a));
+	// rep(i, 0, n) {cout << a[i] << " ";}
+	// cout << "\n";
+	if(a[n - 1] <= m) {
+		cout << sum << "\n";
+		return;
 	}
-	else {
-		cout << (sum + div) / div << "\n";
+	int lo = 0, hi = upper_bound(all(a), m) - a.begin(), tempHi = hi;
+	// cout << lo << " " << hi << "\n";
+	while(lo < tempHi && hi < n - 1) {
+		// cout << lo << " " << hi << "\n";	
+		ans += a[hi];
+		hi++;
+		if(lo + d < tempHi)
+			lo += d;
 	}
+	ans += a[hi];
+	// cout << lo << " " << hi << "\n";
+	while(lo < tempHi) {
+		ans += a[lo];
+		lo++;
+	}
+	cout << ans << '\n';
 }
 
 int main() {

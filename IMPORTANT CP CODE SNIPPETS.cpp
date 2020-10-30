@@ -49,6 +49,25 @@ int countSetBits(int n) {
 }
 
 //-----------------------------------------------
+// Count Unique Bitwise OR of all subarrays
+//-----------------------------------------------
+int subarrayBitwiseORs(vector<int>& A) {
+    unordered_set<int> st;
+    int n = A.size(), chk = 0, curr;
+    for(int i = n - 1; i >= 0; i--) {
+        curr = A[i];
+        st.insert(curr);
+        chk = 0;
+        for(int j = i + 1; j < n && chk != curr; j++) {
+            curr |= A[j];
+            chk |= A[j];
+            st.insert(curr);
+        }
+    }
+    return st.size();
+}
+
+//-----------------------------------------------
 // Sometimes using inbuilt ceil function may lead
 // to WA, because it outputs float values. Try using
 // this instead of ceil(A / B)
@@ -106,6 +125,33 @@ ll mod_mul(ll a, ll b, ll mod) {
 //-----------------------------------------------
 
 //-----------------------------------------------
+// Moore's Voting Algorithm (Majority element)
+// Time -> O(n) || Space -> O(1)
+//-----------------------------------------------
+int findCandidate(vector<int> a) {
+	int len = a.size(), majIndex = 0, cnt = 1;
+	for(int i = 1; i < len; i++) {
+		if(a[i] == a[majIndex])
+			cnt++;
+		else
+			cnt--;
+		if(cnt == 0) {
+			majIndex = i;
+			cnt = 1;
+		}
+	} 
+	cnt = 0;
+	for(int i = 0; i < len; i++) {
+		if(a[i] == a[majIndex])
+			cnt++;
+	}
+	if(2 * cnt > len)
+		return a[majIndex];
+	else
+		return -1;
+}
+
+//-----------------------------------------------
 //Euclid's GCD Algorithm (Basic)
 //-----------------------------------------------
 int gcd(int a, int b) {
@@ -132,7 +178,7 @@ int gcdExtended(int a, int b, int *x, int *y) {
 	return gcd;
 }
 
-//Method 3: Recursive
+//Method 2: Recursive
 int gcdExtended(int a, int b, int& x, int& y) {
     if (b == 0) {
         x = 1;
@@ -146,7 +192,7 @@ int gcdExtended(int a, int b, int& x, int& y) {
     return d;
 }
 
-//Method 2: Using Tuples from STL
+//Method 3: Using Tuples from STL
 tuple<int, int, int> extended_gcd(int a, int b) {
 	if (a == 0)
 		return make_tuple(b, 0, 1);
@@ -745,4 +791,36 @@ void dijkstra() {
 	rep(i, 1, n + 1) {
 		cout << dis[i] << " ";
 	}
+}
+
+
+//----------------------------------------------------------
+// Coin Change (Minimum coins needed to make given sum)
+//----------------------------------------------------------
+int coinChange(vector<int>& coins, int amount) {
+    vector<int> dp(amount + 1, amount + 1);
+    dp[0] = 0;
+    for(int i=1; i<=amount; i++) {
+        for(int j:coins) {
+            if(j<=i)
+                dp[i] = min(dp[i], dp[i-j]);
+        }
+        dp[i]++;
+    }
+    return dp[amount]>amount?-1:dp[amount];
+}
+
+//-------------------------------------------------------
+// Coin Change (Number of ways to make given sum)
+//-------------------------------------------------------
+int coinChange(vector<int>& coins, int amount) {
+	vector<int> dp(amount + 1, 0);
+	dp[0] = 1;
+	for(int coin : coins) {
+		for(j = 1; j < amount + 1; j++) {
+			if(coin <= j)
+				dp[j] += dp[j - coin];
+		}
+	}
+	cout << dp[amount] << "\n";
 }

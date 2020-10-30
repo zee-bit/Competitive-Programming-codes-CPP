@@ -43,11 +43,35 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+struct cust {
+	int t, l, h;
+};
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n, m;
+	cin >> n >> m;
+	vector<cust> a(n);
+	rep(i, 0, n) {
+		cin >> a[i].t >> a[i].l >> a[i].h;
+	}
+	int lo = m, hi = m, time = 0;
+	bool valid = true;
+	rep(i, 0, n) {
+		time = a[i].t - time;
+		if((hi + time < a[i].l) || (lo - time) > a[i].h) {
+			valid = false;
+			break;
+		}
+		lo = max(lo - time, a[i].l);
+		hi = min(hi + time, a[i].h);
+		time = a[i].t;
+	}
+	if(valid) {
+		cout << "YES\n";
+	}
+	else {
+		cout << "NO\n";
+	}
 }
 
 int main() {

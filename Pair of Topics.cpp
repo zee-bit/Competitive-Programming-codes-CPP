@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 using namespace std::chrono;
+#pragma GCC optimize("Ofast")
+#pragma GCC target("avx,avx2,fma")
+#pragma GCC optimization("unroll-loops")
 typedef long long ll;
 typedef long double ld;
 struct custom_hash;
@@ -8,7 +11,7 @@ struct custom_hash;
 #define I insert
 #define ss second
 #define maxN 300002
-#define inf INT_MAX
+#define inf INT_MAX	
 #define ninf INT_MIN
 #define pb push_back
 #define popb pop_back
@@ -45,9 +48,25 @@ ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,
 //========================================XXXXXXXXXXXXXXXX=======================================
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n;
+	cin >> n;
+	vll a(n), b(n);
+	rep(i, 0, n) {cin >> a[i];}
+	rep(i, 0, n) {cin >> b[i];}
+	vll c(n);
+	rep(i, 0, n) {
+		c[i] = a[i] - b[i];
+	}
+	sort(all(c));
+	ll ans = 0;
+	rep(i, 0, n) {
+		if(c[i] > 0) {
+			int f = -c[i] + 1;
+			int p = i - (lower_bound(all(c), f) - c.begin());
+			ans += p;
+		}
+	}
+	cout << ans << '\n';
 }
 
 int main() {
@@ -57,7 +76,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	// cin >> t;
 	while(t--)
 		solve();
 	return 0;

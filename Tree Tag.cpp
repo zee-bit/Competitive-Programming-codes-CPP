@@ -43,11 +43,55 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vi ar[maxN];
+int far, maxD, a, b, checkD;
+
+void dfs2(int node, int par, int d) {
+	for(int child : ar[node]) {
+		if(child != par)
+			dfs2(child, node, d + 1);
+	}
+	if(ar[node].size() == 1 && d > maxD) {
+		maxD = d;
+	}
+}
+
+void dfs1(int node, int par, int d) {
+	for(int child : ar[node]) {
+		if(child != par)
+			dfs1(child, node, d + 1);
+	}
+	if(ar[node].size() == 1 && d > maxD) {
+		maxD = d;
+		far = node;
+	}
+	if(node == b)
+		checkD = d;
+}
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n, da, db;
+	cin >> n >> a >> b >> da >> db;
+	rep(i, 1, n + 1) ar[i].clear();
+	rep(i, 1, n) {
+		int u, v;
+		cin >> u >> v;
+		ar[u].pb(v);
+		ar[v].pb(u);
+	}
+	maxD = 0, checkD = 0;
+	dfs1(a, -1, 0);
+	if(checkD <= da || 2 * da >= db) {
+		cout << "Alice\n";
+		return;
+	}
+	maxD = 0;
+	dfs2(far, -1, 0);
+	if(maxD <= 2 * da) {
+		cout << "Alice\n";
+	} else {
+		cout << "Bob\n";
+	}
 }
 
 int main() {

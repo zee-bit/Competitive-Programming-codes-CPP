@@ -7,7 +7,7 @@ struct custom_hash;
 #define ff first
 #define I insert
 #define ss second
-#define maxN 300002
+#define maxN 100002
 #define inf INT_MAX
 #define ninf INT_MIN
 #define pb push_back
@@ -43,11 +43,33 @@ inline ll mul(ll x,ll y,ll m){ll z=1LL*x*y;if (z>=m){z%=m;} return z;}
 ll powmod(ll x,ll y,ll m){ll r=1;while(y){if(y&1){r=mul(r,x,m);}y>>=1;x=mul(x,x,m);}return r;}
 
 //========================================XXXXXXXXXXXXXXXX=======================================
+vi ar[maxN], vis(maxN);
+
+int dfs(int node) {
+	vis[node] = true;
+	int curr_size = 1;
+	for (int child : ar[node]) {
+		if (!vis[child])
+			curr_size += dfs(child);
+	}
+	return curr_size;
+}
 
 void solve() {
-	int a, b;
-	cin >> a >> b;
-	cout << "Hi " << a << " " << b << "!"; 
+	int n, m;
+	cin >> n >> m;
+	rep(i, 0, m) {
+		int u, v;
+		cin >> u >> v;
+		ar[u].pb(v);
+		ar[v].pb(u);
+	}
+	int ans = 0;
+	rep(i, 1, n + 1) {
+		if(!vis[i])
+			ans += (dfs(i) - 1);
+	}
+	cout << ans << "\n";
 }
 
 int main() {
@@ -57,7 +79,7 @@ int main() {
   		freopen("output.txt", "w", stdout);
 	#endif
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while(t--)
 		solve();
 	return 0;
